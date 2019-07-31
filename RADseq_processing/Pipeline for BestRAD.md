@@ -67,7 +67,7 @@ Repeat in order to change `.2.2. to .2.`
 Look at log from process_radtags step and discard any with low number of reads. You can look at the different columns to figure out why number of reads is so low. To eliminate from downstream stacking, you'll delete individual from the popmap file.
 
 **Do a test run**
-... to figure out appropriate stacking parameters. Select a subset of your data and run in test folders (following Rochette and Catchen 2017).
+... to figure out appropriate stacking parameters. Select a subset of your data and run in test folders (following Rochette and Catchen 2017). See Rochette and Catchen for how to evaluate runs. 
 
 ```sh
 popmap=./BAWR_test1names.txt
@@ -84,9 +84,10 @@ done;
 ```
 
 **3. Map**
-After, run `denovo_map.pl` for unreferenced genomes. You can run in parallel so change `-T` accordingly, based on processors you have.
+Run `denovo_map.pl` for full  dataset. You can run in parallel so change `-T` accordingly, based on processors you have.
 
 ```sh
+#Examples
 denovo_map.pl --samples ./clone_filtered/ --popmap ./BAWR40_popmap.txt -o ./stacks/ -T 10 -M 3 -m 3 -r 3 --paired
 denovo_map.pl --samples ./BAWR_clone_filtered/ --popmap ./BAWR_names/BAWR40_popmap.txt -o ./BAWR_stacks/M3 -T 10 -M 3 -m 3 -r 3 --paired --min-samples-per-pop 0.80 -d
 ```
