@@ -67,28 +67,14 @@ Repeat in order to change `.2.2. to .2.`
 Look at log from process_radtags step and discard any with low number of reads. You can look at the different columns to figure out why number of reads is so low. To eliminate from downstream stacking, you'll delete individual from the popmap file.
 
 **Do a test run**
-... to figure out appropriate stacking parameters. Select a subset of your data and run in test folders (following Rochette and Catchen 2017). See Rochette and Catchen for how to evaluate runs. 
+... to figure out appropriate stacking parameters. Select a subset of your data and run in test folders (following Rochette and Catchen 2017). See Rochette and Catchen for how to evaluate runs. See the `parameter_test.sh` script to do the mini-runs. Need to look at output to determine best M and n. Use `r80_filter.sh` to run populations on each of the stacks and cp distribs file to central place for processing.
 
-```sh
-popmap=./BAWR_test1names.txt
-reads_dir=../BAWR_clone_filtered
-
-for ((M=1; M < 9; M++))
-do
-        mkdir stacks.M$M;
-        out_dir=stacks.M$M;
-        log_file=$out_dir/denovo_map.oe;
-        denovo_map.pl --samples $reads_dir --popmap $popmap -o $out_dir -M $M -n $M -m 3 \
-                -T 10 &> $log_file; 
-done;
-```
-
-**3. Map**
-Run `denovo_map.pl` for full  dataset. You can run in parallel so change `-T` accordingly, based on processors you have.
+**3. Genotyping pipeline (two options)**
+You can run `denovo_map.pl` for full  dataset as below, but following Rochette and Catchen, do the steps separately. Start with `ustacks_wrapper.sh`.
 
 ```sh
 #Examples
 denovo_map.pl --samples ./clone_filtered/ --popmap ./BAWR40_popmap.txt -o ./stacks/ -T 10 -M 3 -m 3 -r 3 --paired
-denovo_map.pl --samples ./BAWR_clone_filtered/ --popmap ./BAWR_names/BAWR40_popmap.txt -o ./BAWR_stacks/M3 -T 10 -M 3 -m 3 -r 3 --paired --min-samples-per-pop 0.80 -d
+denovo_map.pl --samples ./BAWR_clone_filtered/ --popmap ./BAWR_names/BAWR40_popmap.txt -o ./BAWR_stacks -T 10 -M 3 -m 3 --paired -d
 ```
 
