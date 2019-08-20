@@ -23,9 +23,9 @@
       <style> .text-cell {font-size: 15px;}.code-cell {font-size: 12px;}.markdown-cell {font-size: 15px;}.markdown-cell code{background-color: "red";}.latex-cell {font-size: 15px;}</style>
     </head>
     <body>
-      
+      <div id="nav"><div>Previous: <a href='Associated files.html'>Associated files</a>, Up: <a href='index.html'>Index</a></div></div>
       <div id="titlearea">
-        <h2>Sarah Wenner Data</h2>
+        <h2>Main Notebook</h2>
       </div>
       <div id="contentarea"><div class="cell markdown-cell"><h2>August 19,2019 on csbehemoth</h2>
 </div><div class="cell code-cell"><div class="ace-xcode"><div class="ace_static_highlight ace_show_gutter" style="counter-reset:ace_line 0"><div class="ace_line"><span class="ace_gutter ace_gutter-cell" unselectable="on"></span><span class="ace_identifier">lchan</span>@<span class="ace_identifier">behemoth</span>:<span class="ace_keyword ace_operator">~/</span><span class="ace_identifier">RADseq</span><span class="ace_keyword ace_operator">&gt;</span> <span class="ace_identifier">aws</span> <span class="ace_identifier">configure</span>
@@ -41,9 +41,9 @@
 </div><div class="ace_line"><span class="ace_gutter ace_gutter-cell" unselectable="on"></span>
 </div><div class="ace_line"><span class="ace_gutter ace_gutter-cell" unselectable="on"></span><span class="ace_identifier">lchan</span>@<span class="ace_identifier">behemoth</span>:<span class="ace_keyword ace_operator">~/</span><span class="ace_identifier">RADseq</span><span class="ace_keyword ace_operator">/</span><span class="ace_identifier">PHCO_raw</span><span class="ace_keyword ace_operator">&gt;</span> <span class="ace_identifier">aws</span> <span class="ace_identifier">s3</span> <span class="ace_identifier">sync</span> <span class="ace_identifier">s3</span>:<span class="ace_keyword ace_operator">//</span><span class="ace_identifier">genohub9859079</span> . <span class="ace_comment">##download all in folder</span>
 </div></div></div></div><div class="cell markdown-cell"><h2>overnight: Processed Data with:</h2>
-<p><code>process_radtags -P -1 PHCO_raw/19099FL-01-01_S0_L005_R1_001.fastq.gz -2 PHCO_raw/19099FL-01-01_S0_L005_R2_001.fastq.gz -i gzfastq -e sbfI -b ./PHCO_names/barcodes_wnames_L005.txt -o ./PHCO_processed/ --barcode-dist-1 3 --barcode-dist-2 3 -r -q --bestrad &amp;&gt; L005_processed.oe</code><br>
-<code>process_radtags -P -1 PHCO_raw/19099FL-01-02_S0_L006_R1_001.fastq.gz -2 PHCO_raw/19099FL-01-02_S0_L006_R2_001.fastq.gz -i gzfastq -e sbfI -b ./PHCO_names/barcodes_wnames_L006.txt -o ./PHCO_processed/ --barcode-dist-1 3 --barcode-dist-2 3 -r -q --bestrad &amp;&gt; L006_processed.oe</code></p>
-<p>Was fine except that the automatically generated log from L006 overwrote the one in L005.</p>
+<p><code>process_radtags -P -1 ./PHCO_raw/19099FL-01-01_S0_L005_R1_001.fastq.gz -2 ./PHCO_raw/19099FL-01-01_S0_L005_R2_001.fastq.gz -i gzfastq -e sbfI -b ./PHCO_names/barcodes_wnames_L005.txt -o ./L005_processed/ --barcode-dist-1 3 --barcode-dist-2 3 -r -q --bestrad &amp;&gt; ./L005_processed/L005_process_radtags.oe</code><br>
+<code>process_radtags -P -1 ./PHCO_raw/19099FL-01-02_S0_L006_R1_001.fastq.gz -2 ./PHCO_raw/19099FL-01-02_S0_L006_R2_001.fastq.gz -i gzfastq -e sbfI -b ./PHCO_names/barcodes_wnames_L006.txt -o ./L006_processed/ --barcode-dist-1 3 --barcode-dist-2 3 -r -q --bestrad &amp;&gt; ./L006_processed/L006_process_radtags.oe</code></p>
+<p>*Notes: Need to direct to different output folders or .log will overwrite.</p>
 </div><div class="cell markdown-cell"><h2>August 20, 2019 on csbehemoth</h2>
 <p>Combined <code>L005_names.txt</code> and <code>L006_names.txt</code> then deleted LIMU samples.<br>
 Ran following script</p>
@@ -59,7 +59,9 @@ Ran following script</p>
 </div><div class="ace_line"><span class="ace_gutter ace_gutter-cell" unselectable="on"></span>  <span class="ace_identifier">clone_filter</span> <span class="ace_keyword ace_operator">-</span><span class="ace_identifier">P</span> <span class="ace_keyword ace_operator">-</span><span class="ace_constant ace_numeric">1</span> .<span class="ace_keyword ace_operator">/</span><span class="ace_identifier">PHCO_processed</span><span class="ace_keyword ace_operator">/</span><span class="ace_variable">$line</span><span class="ace_constant ace_numeric">.1</span>.<span class="ace_identifier">fq</span>.<span class="ace_identifier">gz</span> <span class="ace_keyword ace_operator">-</span><span class="ace_constant ace_numeric">2</span> .<span class="ace_keyword ace_operator">/</span><span class="ace_identifier">PHCO_processed</span><span class="ace_keyword ace_operator">/</span><span class="ace_variable">$line</span><span class="ace_constant ace_numeric">.2</span>.<span class="ace_identifier">fq</span>.<span class="ace_identifier">gz</span> <span class="ace_keyword ace_operator">-</span><span class="ace_identifier">i</span> <span class="ace_identifier">gzfastq</span> <span class="ace_keyword ace_operator">-</span><span class="ace_identifier">o</span> .<span class="ace_keyword ace_operator">/</span><span class="ace_identifier">PHCO_clone_filtered</span><span class="ace_keyword ace_operator">/</span> <span class="ace_keyword ace_operator">-</span><span class="ace_identifier">D</span> <span class="ace_keyword ace_operator">&amp;&gt;</span> <span class="ace_variable">$line</span>.<span class="ace_identifier">clonefil</span>.<span class="ace_identifier">oe</span>
 </div><div class="ace_line"><span class="ace_gutter ace_gutter-cell" unselectable="on"></span><span class="ace_keyword">done</span><span class="ace_punctuation ace_operator">;</span>
 </div></div></div></div><div class="cell markdown-cell"></div><div class="cell markdown-cell"></div></div>
-      <script></script>
+      <script>document.body.onkeyup = function(e) {
+if (e.keyCode === 37) window.location.href = 'Associated files.html';
+}</script>
     </body>
     </html>
   
