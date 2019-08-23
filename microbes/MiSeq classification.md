@@ -41,3 +41,30 @@ qiime feature-classifier classify-sklearn --i-classifier classifier.qza --i-read
 #qiime feature-classifier classify-sklearn --i-classifier classifier.qza --i-reads rep-seqs_janice.qza --o-classification taxonomy_janice.qza
 ```
 
+###Troubleshooting
+Ran: `qiime metadata tabulate --m-input-file taxonomy.qza --o-visualization taxonomy.qzv`
+Got Error: 
+`CategoricalMetadataColumn does not support strings with leading or trailing whitespace characters: 'D_0__Bacteria;D_1__Chloroflexi;D_2__Gitt-GS-136;D_3__uncultured bacterium ’`
+
+See [here](https://forum.qiime2.org/t/qiime-taxa-filter-table-error/3947) for solution (needs some edits for syntax).
+
+***Steps to solve problem***
+
+```sh
+qiime tools export --input-path taxonomy_p20.qza --output-path tax_p20-with-spaces
+
+qiime metadata tabulate --m-input-file tax_p20-with-spaces/taxonomy.tsv --o-visualization tax_p20_metadata.qzv
+
+qiime tools export --input-path tax_p20_metadata.qzv --output-path tax_p20-as-metadata
+
+qiime tools import --type 'FeatureData[Taxonomy]' --input-path tax_p20-as-metadata/metadata.tsv --output-path tax_p20-without-spaces.qza
+```
+
+***Then proceed***
+
+```sh
+qiime metadata tabulate --m-input-file tax_p20-without-spaces.qza --o-visualization tax_p20_final.qzv
+
+qiime taxa barplot --i-table ../table.qza --i-taxonomy tax_p20-without-spaces.qza --m-metadata-file ../sample_metadata.tsv --o-visualization taxa_p20-barplots.qzv
+```
+

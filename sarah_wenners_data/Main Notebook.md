@@ -51,5 +51,62 @@ do
 done;
 ```
 
+## August 22, 2019
+Clean up names in among clone filtered files.
+```sh
+for filename in *; do mv $filename ${filename//.1.1./.1.}; done
+```
+and
+```sh
+for filename in *; do mv $filename ${filename//.2.2./.2.}; done
+```
 
+Ran test on them using following script (`test_param_stacks.sh`) and set of 12 taxa. Taxa are: 
+```
+PHCO_007	TOP
+PHCO_120	VER
+PHCO_429	SIM
+PHBL_134	SGM
+PHBL_407	PIR
+PHCO_421	MUG
+PHCO_448	LIB
+PHBL_129	LAX
+PHCO_471	HCC
+PHCO_066	GRI
+PHCO_136	FRA
+```
+
+```sh
+popmap=./test_group.txt
+reads_dir=../PHCO_clone_filtered
+
+for ((M=1; M < 8; M++))
+do
+	mkdir stacks.M$M;
+	out_dir=stacks.M$M;
+	log_file=$out_dir/denovo_map.oe;
+	denovo_map.pl --samples $reads_dir --popmap $popmap -o $out_dir -M $M -n $M -m 3 -T 20 &> $log_file; 
+done;
+```
+
+When they were finished, I ran `r80_filter.sh`:
+```sh
+#! /bin/bash
+
+dir_for_logs=test_logs
+mkdir $dir_for_logs
+
+for ((M=1; M < 8; M++))
+do
+        stacks_dir=stacks.M$M;
+        out_dir='stacks.M'$M'/M'$M'populations.R80';
+        log_file=$out_dir'/populations.oe';
+	mkdir $out_dir;
+	populations -P $stacks_dir -O $out_dir -R 0.80 &> $log_file
+
+	# Copy logs to a central place for analysis
+        cp $out_dir/'populations.log.distribs' $dir_for_logs'/M'$M'_populations.log.distribs';
+        #cp $out_dir/'populations.log' './test_log_files/M'$M'_populations.log';
+done;
+```
 
