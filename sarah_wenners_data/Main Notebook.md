@@ -110,3 +110,62 @@ do
 done;
 ```
 
+## August 24thish 2019
+
+Stacked with M=3 and N=5 using `ustacks`
+```sh
+#!/bin/bash
+
+clean_dir="../PHCO_clone_filtered/"
+filename="../PHCO_names/all_Phry_names.txt"
+all_lines=`cat $filename`
+counter=1
+
+for line in $all_lines;
+do 
+        sample=$line
+        sample_index=$counter
+        fq1_file=$clean_dir$sample'.1.fq.gz'
+        log_file=$sample'.ustacks.oe'
+        echo $fq1_file
+        
+        ustacks -t gzfastq -f $fq1_file -o . -i $sample_index -m 3 --name $sample -M 3 -N 5 -p 20 &> $log_file
+
+        ((counter++))
+done;
+```
+
+Ran `pullcoverage.sh`
+```sh
+all_logs=`ls *.oe`
+
+for line in $all_logs;
+do 
+        echo $line `grep 'Final' $line` >> recordlogs.txt
+done;
+```
+
+##August 27th 2019
+cstacks on for from `populations.catalog.tsv`
+```sh
+cstacks -P . -M ../PHCO_names/popmap.catalog.tsv -n 3 &> cstacks.oe
+```
+
+`populations.catalog.tsv` is on [https://github.com/laurenchan/notebook/tree/master/sarah_wenners_data/](https://github.com/laurenchan/notebook/tree/master/sarah_wenners_data/)
+
+sstacks using script `sstacks.sh`
+```sh
+#!/bin/bash
+
+filename="../PHCO_names/RAAU86_names.txt"
+all_lines=`cat $filename`
+
+for line in $all_lines;
+do 
+        sample=$line
+        log_file=$sample.sstacks.oe
+        sstacks -c . -s ./$sample -o . &> ./$log_file
+
+done;
+```
+
