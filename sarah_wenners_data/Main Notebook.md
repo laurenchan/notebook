@@ -157,7 +157,7 @@ sstacks using script `sstacks.sh`
 ```sh
 #!/bin/bash
 
-filename="../PHCO_names/RAAU86_names.txt"
+filename="../PHCO_names/all_Phry_names.txt"
 all_lines=`cat $filename`
 
 for line in $all_lines;
