@@ -1,0 +1,70 @@
+---
+title: "ReBird"
+date: "September 19, 2019"
+author: "Lauren Chan"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tests with ReBird
+
+Testing some of the functionality of ReBird to download appropriate records.
+
+Using `rebird v1.0.3`
+
+Load libraries
+```{r}
+library(rebird)
+```
+Store keys and loc in variables to make it a little easier to call them.
+
+
+```{r}
+mykey <- "96h4mi8jusor"
+fernhill <- "L163529"
+```
+
+The following code will get data for a particular date from Fernhill. The `fieldSet="full"` is necessary to get all 27 columns of data. Otherwise, only get 12. Binding of tables is clunky.
+```{r eval=FALSE}
+oct1 <- ebirdhistorical(loc=fernhill, date="2016-10-01", key=mykey, fieldSet = "full")
+oct2 <- ebirdhistorical(loc=fernhill, date="2016-10-02", key=mykey, fieldSet = "full")
+
+twodays <- rbind(oct1, oct2)
+```
+
+## Date formats are strings as YYYY-MM-DD that need to be converted to date format using `as.Date()`
+```{r}
+a.date <- as.Date("2018-10-01")  
+```
+
+## We can create a function to get the records
+
+This function takes start date and end date as strings. 
+
+
+For i in the range of dates, proceeding one day at a time we grab records. They are stored in `daydat` and we bind this to the everygrowing `dat` variable that is holding all the records gathered so far. 
+```{r}
+myrecords <- function(start, end){     # start and end dates as YYYY-MM-DD strings
+  startdate <- as.Date(start)          # convert to date format
+  enddate <- as.Date(end)
+  dat<-NULL                            # make sure storage table is empty
+  
+  # for loop sequences through the dates. When date is stored in `i` it is in funny format
+  # need to convert first setting origin (1970-01-01" is what R uses as default)
+  for (i in seq.Date(startdate, enddate, 1)){
+    thedate <- as.Date(i, origin="1970-01-01")
+    daydat <- ebirdhistorical(loc=fernhill, date=thedate, key=mykey, fieldSet = "full")
+    dat<- rbind(dat,daydat)
+  }
+  dat
+}
+```
+
+```{r}
+myrecords("2018-10-01", "2018-10-05")
+```
+
+

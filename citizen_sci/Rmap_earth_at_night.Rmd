@@ -1,0 +1,36 @@
+---
+title: "Earth at Night"
+date: "September 15, 2019"
+author: "Lauren Chan"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Testing ability to plot earth at night data
+
+Load libraries. Don't need all of these. I think this really is only using `rgdal`, `raster`, and maybe `sp`.
+```{r echo=FALSE}
+library(sp)
+library(rgdal)
+library(raster)
+library(RColorBrewer)
+library(viridis)
+library(ggplot2)
+```
+
+## Plot Earth at Night Map for Globe
+
+Downloaded full res from [https://earthobservatory.nasa.gov/features/NightLights/page3.php](https://earthobservatory.nasa.gov/features/NightLights/page3.php)
+
+```{r}
+us.lights <- raster("BlackMarble_2016_3km_geo.tif")
+plot(us.lights)
+```
+
+## Next step
+
+Change colors.
+Also, pull data from point or areas of map.
