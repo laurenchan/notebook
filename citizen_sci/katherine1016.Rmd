@@ -1,0 +1,80 @@
+Repeat for new study area 
+```{r}
+library(dplyr)
+library(tidyr)
+library(sp)
+library(raster)
+library(rgeos)
+set.seed(1)
+study_area <- getData("GADM", country = "USA", level = 0, path="data/hex-grids") %>%
+    disaggregate %>% 
+    geometry
+study_area <- sapply(study_area@polygons, slot, "area") %>% 
+  {which(. == max(.))} %>% 
+  study_area[.]
+#clip_list <- c(-80, -70, 35, 45)
+#study_area <- crop(study_area, clip_list)
+plot(study_area, col="gray", bg="lightblue", axes=TRUE)
+```
+# Transform study area. Project to UTM, then make hex grid.
+```{r}
+source('make_grid.r')
+study_area_utm <- CRS("+proj=utm +zone=14 +datum=WGS84 +units=km +no_defs") %>% 
+  spTransform(study_area, .)
+hex_grid <- make_grid(study_area_utm, type = "hexagonal", 
+                cell_area = 1000000, clip = FALSE)
+plot(study_area_utm, col = "grey50", bg = "light blue", axes = FALSE)
+plot(hex_grid, border = "orange", add = TRUE)
+```
+#Pull coordinates, and projection of data frame
+```{r}
+#coordinates("hypenascabra1015") <- ~Lat/long + Longitude
+```
+# Error
+# Lauren suggest on changing Lat/Long to Latitute 
+# Change cvs file to a dataframe
+# Repeat from 10/07
+```{r}
+bamona <- read.csv("data/bamonahypenascabra1015.csv") # Simpler way to read in csv files
+keeps <- c("Scientific.Name","Observation.Date","Region.s.","Lat.Long","Longitude")
+bamona <-bamona[keeps]
+bamona <- bamona[(!is.na(bamona$Lat.Long))|(!is.na(bamona$Longitude)),]
+coordinates(bamona) <- ~ Longitude + Lat.Long
+```
+
+
+```{r}
+#setwd("~/Desktop/ARM/09.30")
+library(readr)
+bamonahyperscabra1015 <-read_csv("/Users/nhipham/Desktop/ARM/Data/bamonahypenascabra1015.csv")
+inathypenascabra1015 <-read_csv("/Users/nhipham/Desktop/ARM/Data/inathypenascabra1015.csv")
+keeps <- c("scientific_name","observed_on","place_guess","latitude","longitude")
+inathypenascabra1015<-inathypenascabra1015[keeps]
+keeps <- c("Scientific Name","Observation Date","Region(s)","Lat/Long","Longitude")
+bamonahyperscabra1015 <-bamonahyperscabra1015[keeps]
+colnames(inathypenascabra1015) <- c("Scientific Name","Observation Date","Region(s)","Lat/Long","Longitude")  
+# as.Date(bamonahyperscabra1015$`Observation Date`, format='%m/%d/%Y') 
+bamonahyperscabra1015$`Observation Date` <- as.Date(bamonahyperscabra1015$`Observation Date`, format='%m/%d/%Y')
+hypenascabra1015 <-rbind(inathypenascabra1015, bamonahyperscabra1015)
+colnames(hypenascabra1015) <- c("Scientific Name","Observation Date","Region(s)","Latitude","Longitude")
+hypenascabra1015 <- hypenascabra1015[(!is.na(hypenascabra1015$Latitude) | !is.na(hypenascabra1015$Longitude)),]
+```
+
+# Change to dataframe
+```{r}
+hypenascabra1015.df <- as.data.frame(hypenascabra1015, stringsAsFactors= TRUE) # no need cause we need the Spatial dataframe
+```
+#Try again with coordinate 
+```{r}
+coordinates(hypenascabra1015) <- ~Latitude + Longitude
+```
+
+```{r}
+projection(bamona) <- projection(study_area)
+sightings <- spTransform(bamona, 
+                          CRS("+proj=utm +zone=14 +datum=WGS84 +units=km +no_defs"))
+cropdf  <- crop(sightings, study_area_utm)
+plot(study_area_utm, col = "grey50", bg = "light blue", axes = FALSE)
+plot(hex_grid, border = "orange", add = TRUE)
+plot(cropdf, add=T, pch=19, cex=0.25)
+```
